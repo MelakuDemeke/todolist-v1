@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 
 
 const app = express();
-var items = ["one","two","three"];
+var items = ["learn node js","learn ejs","learn express"];
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
