@@ -1,4 +1,4 @@
-# tindog
+# TODOLIST V1
 [![OS - Linux](https://img.shields.io/badge/OS-Linux-blue?logo=linux&logoColor=white)](https://www.linux.org/ "Go to Linux homepage")
 
 
