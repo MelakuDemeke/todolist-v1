@@ -11,13 +11,9 @@
 <body>
     <h1><%= day %> </h1>
     <ul>
-        <li>one</li>
-        <li>two</li>
-        <li>three</li>
-        <li>for</li>
-        <% for(i=0, i< newItem.length(), i++){ %>
-            <li><%= newItem[i] %> </li>
-        <% } %>   
+       <% for (var i =0; i<newListItems.length; i++){ %>
+            <li><%=  newListItems[i] %> </li>
+       <% } %>
     </ul>
     <form action="/" method="post">
         <input type="text" name="newItem" id="">
