@@ -32,16 +32,14 @@ const item3 = new Items({
 
 const defaultItems = [item1, item2, item3];
 
+const listSchema = {
+    name: String,
+    items: [itemsSchema]
+};
+
+const List = new mongoose.model("List",listSchema);
 
 app.get('/', function(req,res){
-    var today = new Date();
-
-    var options ={
-        weekday: "long",
-        day: "numeric",
-        month:"long"
-    };
-    var day = today.toLocaleDateString("en-Us",options)
 
    Items.find({},function(err, found){
         if(err){
@@ -57,7 +55,7 @@ app.get('/', function(req,res){
                 });
                 res.redirect("/");
             }else{
-                res.render('index',{list:day, newListItems:found});
+                res.render('index',{list: "Today", newListItems:found});
             }
         }
     });
@@ -65,31 +63,67 @@ app.get('/', function(req,res){
 
 app.post('/',function(req,res){
    const itemName = req.body.newItem;
+   const list = req.body.list
 
    const item = new Items({
         name: itemName
    });
 
-   item.save();
+   if (list === "Today"){
+    item.save();
+    res.redirect("/");
+   }else{
+    List.findOne({name: list}, function(err,foundList){
+        foundList.items.push(item);
+        foundList.save();
+        res.redirect("/"+list);
+    });
+   }
 
-   res.redirect("/");
 });
 
 
 app.post("/delete", function (req,res) { 
     const checkedItemid = req.body.checkbox;
+    const listName = req.body.listName;
 
-    Items.findByIdAndRemove(checkedItemid,function(err){
-        if (err){
-            console.log("error found");
-            res.redirect("/");
-        }else{
-            res.redirect("/");
+    if(listName === "Today"){
+        Items.findByIdAndRemove(checkedItemid,function(err){
+            if (err){
+                console.log("error found");
+                res.redirect("/");
+            }else{
+                res.redirect("/");
+            }
+        });
+    }else{
+        List.findOneAndUpdate(
+            {name: listName},
+            {$pull: {items: {_id: checkedItemid}}},
+            function(err,results){
+                if(!err){
+                    res.redirect("/"+listName);
+                }
+        });
+    }
+ })
+
+app.get('/:url', function(req,res){
+    const customListName = req.params.url;
+    List.findOne({name: customListName}, function (err,foundList) {
+        if(!err){
+            if(!foundList){
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                });
+                list.save();
+                res.redirect("/"+customListName);
+            }else{
+                res.render("index",{list: foundList.name, newListItems: foundList.items});
+            }
         }
     })
- })
-app.get('/work',function(req,res){
-    res.render('index',{list: "work list",newListItems:workItem});
 });
 
 app.get('/about',function(req,res){
