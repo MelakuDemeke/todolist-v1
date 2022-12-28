@@ -14,7 +14,7 @@ This is a simple frontend project which is built while learning full-stack web d
 ### installtion
 ```npm i```
 ## final result
-![Final result](sc/todo_v1.png)
+![Final result](img/todo.gif)
 ## In this project, I learn
 - what EJS is
 - how to pass data from server to view
